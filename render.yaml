@@ -1,0 +1,37 @@
+# render.yaml — Render.com Blueprint
+# Provisions web service + PostgreSQL in one click.
+
+services:
+  - type: web
+    name: typeforge
+    runtime: node
+    region: singapore
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/me
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+      - key: DATABASE_URL
+        fromDatabase:
+          name: typeforge-db
+          property: connectionString
+
+      - key: SESSION_SECRET
+        generateValue: true    # Render auto-generates a secure value
+
+      - key: ADMIN_TOKEN
+        generateValue: true    # Copy from dashboard to use extract-paragraphs script
+
+      - key: FRONTEND_URL
+        value: https://typeforge.onrender.com   # Update to your actual Render URL
+
+databases:
+  - name: typeforge-db
+    databaseName: typeforge
+    user: typeforge
+    region: singapore
+    plan: free
